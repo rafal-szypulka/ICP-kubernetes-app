@@ -2,14 +2,19 @@
 
 Outline of configuration steps:
 
+- Configure PersistentVolume to store Grafana configuration.
 - Deploy Grafana 5 in ICP using helm chart for Grafana, provided by kubernetes project.
 - Modify Grafana Pod with additional container which provide access to cluster API via `kubectl proxy` client. 
-- Install [grafana-kubernetes-app](https://github.com/grafana/kubernetes-app).
+- Install [grafana-kubernetes-app](https://github.com/grafana/kubernetes-app) inside Grafana container.
 - Configure connection to cluster API via sidecar container.
 - Configure connection to standard ICP Prometheus instance.
 - Make minor modifications to Prometheus queries in some of dashboard panels (some labels are specific to ICP).
 
 1). Add `https://kubernetes-charts.storage.googleapis.com` to the list of helm repositories in ICP.
+
+```
+helm repo add kubernetes-charts https://kubernetes-charts.storage.googleapis.com
+```
 
 2). Verify that new repository is visible in helm CLI client:
 
@@ -22,7 +27,7 @@ Update Complete. ⎈ Happy Helming!⎈
 
 $ helm repo list
 NAME  	URL
-stable	https://kubernetes-charts.storage.googleapis.com
+kubernetes-charts	https://kubernetes-charts.storage.googleapis.com
 local 	http://127.0.0.1:8879/charts
 ```
 3). Configure PersistentVolume where Grafana configuration will be stored.
@@ -54,7 +59,7 @@ kubectl create -f pv-grafana.yml
 4). Install latest version of Grafana (5.0.4 at the time of writing this procedure).
 
 ```
-helm install --name g5 stable/grafana --set server.service.type=NodePort –tls
+helm install --name g5 kubernetes-charts/grafana --set server.service.type=NodePort --tls
 ```
 5). Verify you can logon to new Grafana instance. 
 a.Identify port assigned by NodePort using:
@@ -62,15 +67,15 @@ a.Identify port assigned by NodePort using:
 ```
 $ kubectl get services
 (...)
-g5-grafana                    NodePort    10.0.0.209   <none>        80:32766/TCP   5d 
+g5-grafana                    NodePort    10.0.0.209   <none>        80:3nnnn/TCP   5d 
 ```
 b. Collect initial admin password for your new Grafana 5 installation using:
 
 ```
-kubectl get secret --namespace default mm-grafana -o jsonpath="{.data.grafana-admin-password}" | base64 --decode ; echo
+kubectl get secret --namespace default g5-grafana -o jsonpath="{.data.grafana-admin-password}" | base64 --decode ; echo
 ```
 c. Logon to Grafana `http://<ICP_cluster_ip>:<port>`
-where <port> is a port ranging from 30000-32767 collected in step 5a.
+where `<port>` is a port ranging from 30000-32767 collected in step 5a.
 
 6). Verify that PersistentVolume g5-grafana has status BOUND using:
 
@@ -102,36 +107,48 @@ kubectl get pod|grep g5-grafana
 b. Logon to grafana container.
 
 ```
-kubectl exec -it mm-grafana-599bc546c4-jtv9f -c grafana -- bash
+kubectl exec -it <your-g5-grafana-pod> -c grafana -- bash
 ```
-c. Install grafana-kubernetes-app.
+c. Install grafana-kubernetes-app and exit container shell session.
 
 ```
-grafana-cli plugins install grafana-kubernetes-app
+$ grafana-cli plugins install grafana-kubernetes-app
+$ exit 
 ```
 9). Delete g5-grafana Pod to reload Grafana configuration (it will be restored by g5-grafana Deployment).
 
-10). Logon to Grafana and verify that `grafana-kubernetes-app` plugin was installed.
+```
+kubectl delete pod <your-g5-grafana-pod>
+```
 
-11). Configure connection to ICP cluster, use `http://localhost:8001` as a connection URL and proxy as an access method.
+10). Logon to Grafana and configure connection to default ICP Prometheus instance.
 
-12). Configure connection to default ICP Prometheus instance.
+a. Set `prometheus` as data source name and `URL` as `https://<prometeus_ClusterIP>:9090`. Prometheus ClusterIP (service name: monitoring-prometheus) can be collected using: 
 
-a. Set URL as `https://<prometeus_cluster_ip>:9090`.
+```
+kubectl get services -n kube-system|grep prometheus
+```
 
-b. Set proxy as an access method.
+b. Set `proxy` as an access method.
 
 c. Select checkboxes next to `TLS Client Auth`, `With CA Cert` and `Skip TLS Verification (Insecure)`.
 
-d. Copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/ca.pem` to the field `CA Cert`.
+d. Copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/ca.pem` into the field `CA Cert`.
 
-e. Copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/client.pem` to the field `Client Cert`.
+e. Copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/client.pem` into the field `Client Cert`.
 
-f. copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/client-key.pem` to the field `Client Key`.
+f. copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/client-key.pem` into the field `Client Key`.
 
 g. Click `Save & Test`.
 
-13). Replace default dashbards for Cluster, Node and Container with dashboards provided in this repository. 
+11). Verify that `grafana-kubernetes-app` plugin was installed. Access the URL: `http://<ICP_cluster_ip>:<port>/plugins/grafana-kubernetes-app/edit` where `<port>` is a port ranging from 30000-32767 collected in step 5a.
+Click `Enable` button.
+![aa](kubernetes-app1.png)
+
+12). Configure connection to ICP cluster, use `mycluster` as a cluster name, `http://localhost:8001` as a connection URL and `proxy` as an access method.
+
+13). Replace default dashbards for `Cluster`, `Node` and `Container` with dashboards provided in this repository. 
+
 
 
 
