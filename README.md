@@ -150,6 +150,10 @@ Click `Enable` button.
 
 13). Replace default dashbards for `Cluster`, `Node` and `Container` with dashboards provided in this repository. 
 
+- [ICP Cluster](ICP Cluster-1523282294161.json)
+- [ICP Node](ICP Node-1523282144955.json)
+- [ICP Container](ICP Container-1523282213404.json)
+
 
 
 
