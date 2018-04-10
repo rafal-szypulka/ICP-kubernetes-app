@@ -3,7 +3,7 @@
 Outline of configuration steps:
 
 - Configure PersistentVolume to store Grafana configuration.
-- Deploy Grafana 5 in ICP using helm chart for Grafana, provided by kubernetes project.
+- Deploy Grafana 5 in ICP using helm chart for Grafana, provided by Kubernetes project.
 - Modify Grafana Pod with additional container which provide access to cluster API via `kubectl proxy` client. 
 - Install [grafana-kubernetes-app](https://github.com/grafana/kubernetes-app) inside Grafana container.
 - Configure connection to cluster API via sidecar container.
