@@ -16,7 +16,7 @@ The app uses Kubernetes tags to allow you to filter pod metrics. Kubernetes clus
 - Disk Capacity/Usage
 - Overview of Nodes, Pods and Containers
 
-![Cluster](Grafana_-_ICP_Cluster.png)
+![Cluster](images/Grafana_-_ICP_Cluster.png)
 
 ### Node Metrics
 
@@ -30,7 +30,7 @@ The app uses Kubernetes tags to allow you to filter pod metrics. Kubernetes clus
 - Network Packets/second
 - Network Errors/second
 
-![Node](Grafana_-_ICP_Node.png)
+![Node](images/Grafana_-_ICP_Node.png)
 
 ### Pod/Container Metrics
 
@@ -40,7 +40,7 @@ The app uses Kubernetes tags to allow you to filter pod metrics. Kubernetes clus
 - Read IOPS
 - Write IOPS
 
-![Container](Grafana_-_ICP_Container.png)
+![Container](images/Grafana_-_ICP_Container.png)
 
 ## Outline of configuration steps
 
@@ -193,7 +193,7 @@ g. Click `Save & Test`.
 
 11). Verify that `grafana-kubernetes-app` plugin was installed. Access the URL: `http://<ICP_cluster_ip>:<port>/plugins/grafana-kubernetes-app/edit` where `<port>` is a port ranging from 30000-32767 collected in step 5a.
 Click `Enable` button.
-![aa](kubernetes-app1.png)
+![aa](images/kubernetes-app1.png)
 
 12). Configure connection to ICP cluster, use `mycluster` as a cluster name, `http://localhost:8001` as a connection URL and `proxy` as an access method.
 
