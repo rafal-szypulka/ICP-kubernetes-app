@@ -1,21 +1,63 @@
 # How to install [grafana-kubernetes-app](https://github.com/grafana/kubernetes-app) in IBM Cloud Private
 
-Outline of configuration steps:
+
+The Grafana Kubernetes Application allows you to monitor IBM Cloud Private Kubernetes cluster's performance. It includes dashboards for Cluster, Node and Pod/Container. The metrics collected are high-level cluster and node stats as well as lower level pod and container stats.
+
+The app uses Kubernetes tags to allow you to filter pod metrics. Kubernetes clusters tend to have a lot of pods and a lot of pod metrics. The Pod/Container dashboard leverages the pod tags, so you can easily find the relevant pod or pods.
+
+## Features
+
+
+### Cluster Metrics
+
+- Pod Capacity/Usage
+- Memory Capacity/Usage
+- CPU Capacity/Usage
+- Disk Capacity/Usage
+- Overview of Nodes, Pods and Containers
+
+![Cluster](Grafana_-_ICP_Cluster.png)
+
+### Node Metrics
+
+- CPU
+- Memory Available
+- Load per CPU
+- Read IOPS
+- Write IOPS
+- %Util
+- Network Traffic/second
+- Network Packets/second
+- Network Errors/second
+
+![Node](Grafana_-_ICP_Node.png)
+
+### Pod/Container Metrics
+
+- Memory Usage
+- Network Traffic
+- CPU Usage
+- Read IOPS
+- Write IOPS
+
+![Container](Grafana_-_ICP_Container.png)
+
+## Outline of configuration steps
 
 - Configure PersistentVolume to store Grafana configuration.
 - Deploy Grafana 5 in ICP using helm chart for Grafana, provided by the Kubernetes project.
 - Modify the Grafana Pod with additional container which provide access to cluster API via `kubectl proxy` client. 
-- Install the [grafana-kubernetes-app](https://github.com/grafana/kubernetes-app) inside Grafana container.
+- Install the [grafana-kubernetes-app](https://github.com/grafana/kubernetes-app) inside the Grafana container.
 - Configure connection to cluster API via sidecar container.
 - Configure connection to standard ICP Prometheus instance.
 - Make minor modifications to Prometheus queries in some of dashboard panels (some labels are specific to ICP).
 
-**Prerequisites:**
+## Prerequisites
 
 - [IBM Cloud Private CLI](https://www.ibm.com/support/knowledgecenter/SSBS6K_2.1.0.2/manage_cluster/install_cli.html)
 - [Helm CLI](https://www.ibm.com/support/knowledgecenter/SSBS6K_2.1.0.2/app_center/create_helm_cli.html)
 
-**Procedure:**
+## Installation
 
 1). Add `https://kubernetes-charts.storage.googleapis.com` to the list of helm repositories in ICP.
 
