@@ -10,6 +10,13 @@ Outline of configuration steps:
 - Configure connection to standard ICP Prometheus instance.
 - Make minor modifications to Prometheus queries in some of dashboard panels (some labels are specific to ICP).
 
+**Prerequisites:**
+
+- [IBM Cloud Private CLI](https://www.ibm.com/support/knowledgecenter/SSBS6K_2.1.0.2/manage_cluster/install_cli.html)
+- [Helm CLI](https://www.ibm.com/support/knowledgecenter/SSBS6K_2.1.0.2/app_center/create_helm_cli.html)
+
+**Procedure:**
+
 1). Add `https://kubernetes-charts.storage.googleapis.com` to the list of helm repositories in ICP.
 
 ```
