@@ -62,6 +62,7 @@ kubectl create -f pv-grafana.yml
 helm install --name g5 kubernetes-charts/grafana --set server.service.type=NodePort --tls
 ```
 5). Verify you can logon to new Grafana instance. 
+
 a.Identify port assigned by NodePort using:
 
 ```
