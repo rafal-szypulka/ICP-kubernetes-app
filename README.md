@@ -194,7 +194,7 @@ into the field `CA Cert`.
 e. Copy output of the following command:
 
 ```
-kubectl get secret monitoring-monitoring-client-certs -o jsonpath='{.data.tls\.crt}' \
+kubectl get secret monitoring-monitoring-client-certs -o jsonpath='{.data.tls\.key}' \
 -n kube-system|base64 -D
 ```
 into the field `Client Cert`.
