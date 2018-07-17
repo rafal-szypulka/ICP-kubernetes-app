@@ -179,15 +179,33 @@ a. Set `prometheus` as data source name and `URL` as `https://<prometeus_Cluster
 kubectl get services -n kube-system|grep prometheus
 ```
 
-b. Set `proxy` as an access method.
+b. Set `Server` as an access method.
 
 c. Select checkboxes next to `TLS Client Auth`, `With CA Cert` and `Skip TLS Verification (Insecure)`.
 
-d. Copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/ca.pem` into the field `CA Cert`.
+d. Copy output of the following command:
 
-e. Copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/client.pem` into the field `Client Cert`.
+```
+kubectl get secret monitoring-monitoring-ca-cert -o jsonpath='{.data.tls\.crt}' \
+-n kube-system|base64 -D
+```
+into the field `CA Cert`.
 
-f. copy contents of `<ICP_install_dir>/cluster/cfc-certs/monitoring/client-key.pem` into the field `Client Key`.
+e. Copy output of the following command:
+
+```
+kubectl get secret monitoring-monitoring-client-certs -o jsonpath='{.data.tls\.crt}' \
+-n kube-system|base64 -D
+```
+into the field `Client Cert`.
+
+f. Copy output of the following command:
+
+```
+kubectl get secret monitoring-monitoring-client-certs -o jsonpath='{.data.tls\.crt}' \
+-n kube-system|base64 -D
+```
+into the field `Client Key`.
 
 g. Click `Save & Test`.
 
@@ -195,7 +213,7 @@ g. Click `Save & Test`.
 Click `Enable` button.
 ![aa](images/kubernetes-app1.png)
 
-12). Configure connection to ICP cluster, use `mycluster` as a cluster name, `http://localhost:8001` as a connection URL and `proxy` as an access method.
+12). Configure connection to ICP cluster, use `mycluster` as a cluster name, `http://localhost:8001` as a connection URL and `server` as an access method.
 
 13). Replace default dashbards for `Cluster`, `Node` and `Container` with dashboards provided in this repository. 
 
